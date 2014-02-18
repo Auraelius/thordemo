@@ -3,47 +3,18 @@
 # use chmod u+x thordemo to make sure the file is executable
 
 require 'thor'
+require_relative '../lib/commands.rb'
 
 class ThorDemo < Thor
 
   # declare  options
-
   # class options apply to all commands
 
   class_option :v, aliases: ['--verbose'],
                 desc: 'Global option that makes the app chatty',
                 :type => :boolean
 
-
   # method options only apply to a particular method
-  # The case option only applys to the echo command
-  
-  option :c, aliases: ['--case'],
-                desc: 'Set the case of the list command',
-             default: 'Upper',
-              banner: 'CASE'
-
- # commands are methods, each with its own description
-
-  desc 'echo things...', 'command that prints one or more things'
-  def echo(*things)
-    puts 'this is the echo command'
-    if options[:c]=="Upper"
-      puts "the case option is set to #{options[:c]}"
-      things.each { |t| puts t.upcase}
-    else
-      puts "the case option is set to #{options[:c]}"
-      puts things
-    end
-    
-    if options[:p]
-      puts "the priority option is set to #{options[:p]}"
-    end
-    puts "Happy to be of service!" if options[:v]
-  end
-
-
-    # method options only apply to a particular method
   # The priority option only applys to the list command
 
   option :p, aliases: ['--priority'],
@@ -61,6 +32,25 @@ class ThorDemo < Thor
       puts "the case option is set to #{options[:c]}"
     end
     puts "Happy to be of service!" if options[:v]
+  end
+
+
+
+  # method options only apply to a particular method
+  # The case option only applys to the echo command
+  
+  option :c, aliases: ['--case'],
+                desc: 'Set the case of the list command',
+             default: 'Upper',
+              banner: 'CASE'
+
+  # commands can be in other classes, but the description must be here
+  # note how the arguments are used by thor to determine the command line interface
+  desc 'echo things...', 'command that prints one or more things'
+  def echo(*things)
+
+    Commands.echo(options[:c], options[:v], things)
+
   end
 
 end # class ThorDemo
